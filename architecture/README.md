@@ -1,38 +1,24 @@
-# Arquitectura del Sistema
+# Architecture
 
-Documentación de la arquitectura siguiendo el modelo de vistas **4+1** de Philippe Kruchten. Cada vista aborda un conjunto de preocupaciones de los distintos interesados y, en conjunto, describen la arquitectura del sistema.
+System architecture following the **4+1** view model.
 
-## Vistas
+| View | Purpose |
+| --- | --- |
+| [System context](context-system/context.md) | Scope, actors, external systems |
+| [Logical view](logical-view/view.md) | Components, responsibilities, relationships |
+| [Process view](process-view/view.md) | Concurrency, performance, availability |
+| [Development view](development-view/view.md) | Code organization, modules, dependencies |
+| [Physical view](physical-view/view.md) | Deployment, infrastructure, networks |
+| [Scenarios](scenarios/view.md) | Use cases that validate the views |
 
-| Vista | Propósito | Interesados principales |
-| --- | --- | --- |
-| [Contexto del sistema](context-system/context.md) | Delimita el sistema, actores y sistemas externos. | Todos |
-| [Vista lógica](logical-view/view.md) | Estructura de componentes, responsabilidades y relaciones. | Analistas, diseñadores |
-| [Vista de procesos](process-view/view.md) | Concurrencia, rendimiento, disponibilidad y comunicación. | Integradores, administradores |
-| [Vista de desarrollo](development-view/view.md) | Organización del código, módulos y dependencias. | Programadores, gestores |
-| [Vista física](physical-view/view.md) | Despliegue en hardware e infraestructura. | Administradores, operaciones |
-| [Escenarios](scenarios/view.md) | Casos de uso que validan y cohesionan las vistas. | Todos |
-
-## Relación entre vistas
-
+```mermaid
+graph TD
+    S[Scenarios] --> L[Logical]
+    S --> P[Process]
+    S --> D[Development]
+    S --> F[Physical]
+    C[Context] --> L
+    C --> P
+    C --> D
+    C --> F
 ```
-                 +-------------------+
-                 |     Escenarios    |
-                 +---------+---------+
-                           |
-     +---------------------+---------------------+
-     |           |                   |           |
-+----v----+ +----v----+        +-----v-----+ +---v------+
-| Lógica  | | Procesos |        | Desarrollo | | Física  |
-+---------+ +----------+        +-----------+ +----------+
-                           |
-                 +---------v---------+
-                 | Contexto sistema  |
-                 +-------------------+
-```
-
-## Cómo mantener esta documentación
-
-- Cada vista vive en su propia carpeta y se actualiza de forma independiente.
-- Los escenarios referencian los elementos de las demás vistas para demostrar que la arquitectura cubre los requisitos.
-- Usar diagramas como código (PlantUML/Mermaid) cuando sea posible para mantenerlos versionados.

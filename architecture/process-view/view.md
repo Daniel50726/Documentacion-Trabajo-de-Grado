@@ -1,38 +1,36 @@
-# Vista de Procesos
+# Process View
 
-## Propósito
+Runtime behavior: concurrency, communication, performance, scalability, and availability.
 
-Describir el comportamiento dinámico del sistema: concurrencia, comunicación entre procesos, rendimiento, escalabilidad y disponibilidad.
+## Processes
 
-## Procesos y concurrencia
-
-| Proceso | Tipo | Responsabilidad | Concurrencia |
+| Process | Type | Responsibility | Concurrency |
 | --- | --- | --- | --- |
-| _(Nombre)_ | Servicio / Hilo / Tarea | _(Qué ejecuta)_ | _(Sincrónico/Asíncrono)_ |
+| _(name)_ | Service / Thread / Task | _(what it runs)_ | Sync / Async |
 
-## Comunicación
+## Communication
 
-| Origen | Destino | Protocolo | Patrón |
+| From | To | Protocol | Pattern |
 | --- | --- | --- | --- |
-| _(Componente)_ | _(Componente)_ | HTTP / Mensajería / BD | _(Sync/Async, request-response, pub-sub)_ |
+| _(component)_ | _(component)_ | HTTP / Messaging / DB | Sync / Async |
 
-## Requisitos no funcionales
+## Non-functional requirements
 
-| Atributo | Objetivo | Estrategia |
+| Attribute | Target | Strategy |
 | --- | --- | --- |
-| Rendimiento | _(p. ej. < 300 ms P95)_ | _(caché, indexación)_ |
-| Disponibilidad | _(p. ej. 99.5 %)_ | _(réplicas, health checks)_ |
-| Escalabilidad | _(crecimiento esperado)_ | _(horizontal/vertical)_ |
+| Performance | _(e.g. < 300 ms P95)_ | _(cache, indexing)_ |
+| Availability | _(e.g. 99.5%)_ | _(replicas, health checks)_ |
+| Scalability | _(expected growth)_ | _(horizontal / vertical)_ |
 
-## Diagrama de secuencia
+## Sequence diagram
 
 ```mermaid
 sequenceDiagram
-    participant C as Cliente
-    participant S as Servicio
-    participant D as Base de Datos
-    C->>S: Solicitud
-    S->>D: Consulta
-    D-->>S: Resultado
-    S-->>C: Respuesta
+    participant C as Client
+    participant S as Service
+    participant D as Database
+    C->>S: Request
+    S->>D: Query
+    D-->>S: Result
+    S-->>C: Response
 ```

@@ -1,36 +1,33 @@
-# Vista Lógica
+# Logical View
 
-## Propósito
+Components, responsibilities, interfaces, and relationships, independent of deployment.
 
-Describir la estructura de la solución en términos de componentes, sus responsabilidades, interfaces y relaciones, sin atarse a la tecnología de despliegue.
+## Design principles
 
-## Principios de diseño
+- Separation of concerns
+- Low coupling, high cohesion
 
-- Separación de responsabilidades.
-- Bajo acoplamiento, alta cohesión.
-- _(Agregar principios propios del dominio)_
+## Components
 
-## Componentes
-
-| Componente | Responsabilidad | Depende de |
+| Component | Responsibility | Depends on |
 | --- | --- | --- |
-| _(Nombre)_ | _(Qué hace)_ | _(Componentes)_ |
+| _(name)_ | _(what it does)_ | _(components)_ |
 
-## Modelo de dominio
+## Domain model
 
-| Entidad | Descripción | Atributos clave |
+| Entity | Description | Key attributes |
 | --- | --- | --- |
-| _(Entidad)_ | _(Descripción)_ | _(Atributos)_ |
+| _(entity)_ | _(description)_ | _(attributes)_ |
 
-## Diagrama de componentes
+## Component diagram
 
 ```mermaid
 graph TD
-    A[Componente A] --> B[Componente B]
-    A --> C[Componente C]
+    A[Component A] --> B[Component B]
+    A --> C[Component C]
 ```
 
-## Patrones y decisiones
+## Patterns and decisions
 
-- **Patrón:** _(MVC, capas, hexagonal, etc.)_ — _(justificación)_
-- **ADRs relacionados:** _(enlaces)_
+- **Pattern:** _(layered, hexagonal, etc.)_ — _(rationale)_
+- **Related ADRs:** _(links)_

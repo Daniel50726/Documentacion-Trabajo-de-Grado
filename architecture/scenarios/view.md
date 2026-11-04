@@ -1,53 +1,51 @@
-# Escenarios
+# Scenarios
 
-## Propósito
+Use cases that validate and connect the logical, process, development, and physical views.
 
-Validar la arquitectura mediante casos de uso representativos que recorren las vistas lógica, de procesos, de desarrollo y física. Los escenarios cohesionan y verifican el resto del modelo 4+1.
+## Scenarios
 
-## Escenarios principales
-
-| ID | Escenario | Actor | Vistas involucradas |
+| ID | Scenario | Actor | Views |
 | --- | --- | --- | --- |
-| E-01 | _(Nombre del caso de uso)_ | _(Actor)_ | Lógica, Procesos, Física |
-| E-02 | _(Nombre del caso de uso)_ | _(Actor)_ | Lógica, Desarrollo |
+| E-01 | _(use case)_ | _(actor)_ | Logical, Process, Physical |
+| E-02 | _(use case)_ | _(actor)_ | Logical, Development |
 
-## Detalle de escenarios
+## Details
 
-### E-01 — _(Nombre)_
+### E-01 — _(name)_
 
-- **Objetivo:** _(qué logra el actor)_
-- **Precondiciones:** _(estado inicial)_
-- **Flujo principal:**
-  1. _(Paso)_
-  2. _(Paso)_
-- **Flujos alternativos:** _(errores, excepciones)_
-- **Componentes participantes:** _(referencias a vista lógica)_
-- **Nodos implicados:** _(referencias a vista física)_
+- **Goal:** _(what the actor achieves)_
+- **Preconditions:** _(initial state)_
+- **Main flow:**
+  1. _(step)_
+  2. _(step)_
+- **Alternate flows:** _(errors, exceptions)_
+- **Components:** _(logical view references)_
+- **Nodes:** _(physical view references)_
 
 ```mermaid
 sequenceDiagram
-    actor U as Usuario
+    actor U as User
     participant F as Frontend
-    participant S as Servicio
-    participant D as BD
-    U->>F: Acción
-    F->>S: Solicitud
-    S->>D: Operación
-    D-->>S: Resultado
-    S-->>F: Respuesta
-    F-->>U: Confirmación
+    participant S as Service
+    participant D as Database
+    U->>F: Action
+    F->>S: Request
+    S->>D: Operation
+    D-->>S: Result
+    S-->>F: Response
+    F-->>U: Confirmation
 ```
 
-### E-02 — _(Nombre)_
+### E-02 — _(name)_
 
-- **Objetivo:** _(qué logra el actor)_
-- **Precondiciones:** _(estado inicial)_
-- **Flujo principal:**
-  1. _(Paso)_
-- **Componentes participantes:** _(referencias)_
+- **Goal:** _(what the actor achieves)_
+- **Preconditions:** _(initial state)_
+- **Main flow:**
+  1. _(step)_
+- **Components:** _(references)_
 
-## Trazabilidad con requisitos
+## Requirement traceability
 
-| Requisito | Escenario | Estado |
+| Requirement | Scenario | Status |
 | --- | --- | --- |
-| _(RF-01)_ | E-01 | _(Cubierto)_ |
+| _(RF-01)_ | E-01 | _(Covered)_ |
