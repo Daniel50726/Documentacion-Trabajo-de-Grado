@@ -1,40 +1,38 @@
-# Vista Física
+# Physical View
 
-## Propósito
+Deployment on infrastructure: nodes, environments, networks, and component distribution.
 
-Describir el despliegue del sistema sobre infraestructura: nodos, entornos, redes y distribución de componentes.
+## Nodes
 
-## Nodos e infraestructura
-
-| Nodo | Tipo | Especificaciones | Componentes desplegados |
+| Node | Type | Specs | Deployed components |
 | --- | --- | --- | --- |
-| _(Nombre)_ | VM / Contenedor / Físico | _(CPU, RAM, disco)_ | _(Componentes)_ |
+| _(name)_ | VM / Container / Physical | _(CPU, RAM, disk)_ | _(components)_ |
 
-## Entornos
+## Environments
 
-| Entorno | Propósito | URL / Acceso |
+| Environment | Purpose | URL / Access |
 | --- | --- | --- |
-| Desarrollo | _(local)_ | _(localhost)_ |
-| Pruebas | _(QA)_ | _(url)_ |
-| Producción | _(real)_ | _(url)_ |
+| Development | _(local)_ | _(localhost)_ |
+| Testing | _(QA)_ | _(url)_ |
+| Production | _(live)_ | _(url)_ |
 
-## Diagrama de despliegue
+## Deployment diagram
 
 ```mermaid
 graph TD
-    subgraph Cliente
-        B[Navegador]
+    subgraph Client
+        B[Browser]
     end
-    subgraph Servidor
-        W[Servidor Web]
-        A[Aplicación]
-        D[(Base de Datos)]
+    subgraph Server
+        W[Web server]
+        A[Application]
+        D[(Database)]
     end
     B --> W --> A --> D
 ```
 
-## Redes y seguridad
+## Network and security
 
-- **Zonas de red:** _(DMZ, red interna)_
-- **TLS:** _(certificados, terminación)_
-- **Backups:** _(frecuencia, retención)_
+- **Network zones:** _(DMZ, internal)_
+- **TLS:** _(certificates, termination)_
+- **Backups:** _(frequency, retention)_

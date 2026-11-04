@@ -1,36 +1,32 @@
-# Contexto del Sistema
+# System Context
 
-## Propósito
+## Scope
 
-Delimitar el alcance del sistema: qué se construye, quién lo usa y con qué sistemas externos interactúa.
+- **System:** _(name)_
+- **Goal:** _(problem solved)_
+- **Boundaries:** _(in / out of scope)_
 
-## Alcance
+## Actors
 
-- **Nombre del sistema:** _(completar)_
-- **Objetivo:** _(problema que resuelve)_
-- **Límites:** qué queda dentro y fuera del alcance del trabajo de grado.
-
-## Actores
-
-| Actor | Tipo | Descripción |
+| Actor | Type | Description |
 | --- | --- | --- |
-| _(Nombre)_ | Usuario / Sistema | _(Responsabilidad)_ |
+| _(name)_ | User / System | _(responsibility)_ |
 
-## Sistemas externos
+## External systems
 
-| Sistema | Tipo de integración | Descripción |
+| System | Integration | Description |
 | --- | --- | --- |
-| _(Nombre)_ | API / BD / Servicio | _(Qué se intercambia)_ |
+| _(name)_ | API / DB / Service | _(data exchanged)_ |
 
-## Diagrama de contexto
+## Context diagram
 
 ```mermaid
 graph LR
-    U[Usuario] --> S((Sistema))
-    S --> E1[Sistema externo 1]
-    S --> E2[Sistema externo 2]
+    U[User] --> S((System))
+    S --> E1[External system 1]
+    S --> E2[External system 2]
 ```
 
-## Requisitos de contexto
+## Constraints
 
-- _(Restricciones, normativas, supuestos del entorno)_
+- _(regulations, assumptions)_

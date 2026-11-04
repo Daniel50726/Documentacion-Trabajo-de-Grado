@@ -1,44 +1,42 @@
-# Vista de Desarrollo
+# Development View
 
-## Propósito
+Code organization: modules, packages, dependencies, and build artifacts.
 
-Describir cómo se organiza el software a nivel de código: módulos, paquetes, dependencias y artefactos que apoyan el trabajo del equipo de desarrollo.
-
-## Organización del código
+## Code organization
 
 ```
-proyecto/
+project/
 ├── backend/
 ├── frontend/
 ├── infra/
 └── docs/
 ```
 
-## Módulos
+## Modules
 
-| Módulo | Responsabilidad | Dependencias |
+| Module | Responsibility | Dependencies |
 | --- | --- | --- |
-| _(Nombre)_ | _(Qué contiene)_ | _(Módulos)_ |
+| _(name)_ | _(contents)_ | _(modules)_ |
 
-## Dependencias entre módulos
+## Module dependencies
 
 ```mermaid
 graph LR
-    A[Modulo A] --> B[Modulo B]
-    B --> C[Modulo C]
+    A[Module A] --> B[Module B]
+    B --> C[Module C]
 ```
 
-## Tecnologías y herramientas
+## Technologies
 
-| Capa | Tecnología | Version |
+| Layer | Technology | Version |
 | --- | --- | --- |
-| _(Backend)_ | _(Framework)_ | _(x.y)_ |
-| _(Frontend)_ | _(Framework)_ | _(x.y)_ |
-| _(BD)_ | _(Motor)_ | _(x.y)_ |
+| _(backend)_ | _(framework)_ | _(x.y)_ |
+| _(frontend)_ | _(framework)_ | _(x.y)_ |
+| _(database)_ | _(engine)_ | _(x.y)_ |
 
-## Convenciones
+## Conventions
 
-- **Ramas:** _(git flow, trunk based)_
-- **Versionado:** _(SemVer, etc.)_
-- **Pruebas:** _(unitarias, integración, e2e)_
+- **Branching:** _(git flow, trunk-based)_
+- **Versioning:** _(SemVer, etc.)_
+- **Testing:** _(unit, integration, e2e)_
 - **CI/CD:** _(pipeline)_
