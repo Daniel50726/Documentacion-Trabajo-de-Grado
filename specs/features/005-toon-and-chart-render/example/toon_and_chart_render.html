@@ -1,0 +1,253 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ritmo Cardíaco: Ciclo Circadiano, Entrenamiento y Modelo Predictivo</title>
+  <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+  <style>
+    :root {
+      color-scheme: dark;
+      font-family: Arial, Helvetica, sans-serif;
+      background: #222225;
+      color: #d4d4d7;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      padding: 20px;
+      background: #222225;
+    }
+
+    .chart-shell {
+      width: 100%;
+      height: min(680px, calc(100vh - 40px));
+      min-height: 360px;
+      background: #222225;
+    }
+
+    svg {
+      display: block;
+      width: 100%;
+      height: 100%;
+      overflow: visible;
+    }
+  </style>
+</head>
+<body>
+  <main class="chart-shell">
+    <svg id="forecast-chart" role="img" aria-label="Ritmo cardíaco histórico con picos de entrenamiento y modelo predictivo"></svg>
+  </main>
+
+  <script>
+    // Telemetría de ritmo cardíaco (BPM) en formato tabular TOON.
+    // Refleja el ciclo circadiano:
+    // - 8h de sueño (22:00 a 06:00): 48-60 BPM
+    // - Gimnasio a las 06:00 AM: pico de 135-145 BPM
+    // - Actividad laboral diurna (08:00 a 16:00): 72-84 BPM
+    // - Partido de fútbol a las 19:00 (7 PM): pico de 150-165 BPM
+    const toonText = `series[24]{time,value,lower,upper,type}:
+"Tue 3",54,46,66,observed
+"02:00",50,44,62,observed
+"04:00",48,42,60,observed
+"06:00",142,125,160,observed
+"08:00",84,72,98,observed
+"10:00",74,64,88,observed
+"12:00",80,68,94,observed
+"14:00",75,65,88,observed
+"16:00",78,66,92,observed
+"19:00",156,135,172,observed
+"21:00",86,72,100,observed
+"22:00",64,54,76,observed
+"Wed 4",52,45,65,prediction
+"02:00",49,43,62,prediction
+"04:00",48,42,60,prediction
+"06:00",138,120,158,prediction
+"08:00",82,70,96,prediction
+"10:00",73,63,86,prediction
+"12:00",79,68,92,prediction
+"14:00",74,64,88,prediction
+"16:00",77,65,90,prediction
+"19:00",154,132,170,prediction
+"21:00",84,70,98,prediction
+"22:00",63,53,75,prediction`;
+
+    // Parser reducido para esta tabla TOON: admite celdas simples y strings entre comillas.
+    function parseTabularToon(text) {
+      const lines = text.trim().split(/\r?\n/);
+      const header = lines.shift();
+      const match = header.match(/^([A-Za-z_][\w]*)\[(\d+)\]\{([^}]+)\}:$/);
+      if (!match) throw new Error("Encabezado TOON tabular inválido");
+
+      const [, collection, countText, fieldsText] = match;
+      const fields = fieldsText.split(",").map(field => field.trim());
+      const parseCell = cell => {
+        const value = cell.trim();
+        if (value.startsWith('"')) return JSON.parse(value);
+        if (value === "null") return null;
+        if (value === "true") return true;
+        if (value === "false") return false;
+        if (/^-?\d+(\.\d+)?$/.test(value)) return Number(value);
+        return value;
+      };
+
+      const rows = lines.filter(Boolean).map(line => {
+        const cells = line.split(",").map(parseCell);
+        if (cells.length !== fields.length) {
+          throw new Error(`Fila TOON inválida: se esperaban ${fields.length} columnas`);
+        }
+        return Object.fromEntries(fields.map((field, index) => [field, cells[index]]));
+      });
+
+      if (rows.length !== Number(countText)) {
+        throw new Error(`TOON declara ${countText} filas y contiene ${rows.length}`);
+      }
+      return { [collection]: rows };
+    }
+
+    const { series } = parseTabularToon(toonText);
+    const svg = d3.select("#forecast-chart");
+    const container = document.querySelector(".chart-shell");
+    const margin = { top: 16, right: 16, bottom: 38, left: 78 };
+    const xKeys = series.map((row, index) => String(index));
+    let phase = 0;
+    let blueLayer;
+    let redLayer;
+    let xScale;
+    let yScale;
+
+    function plottedRows() {
+      return series.map((row, index) => {
+        // Variación fisiológica normal (± 2.5 BPM)
+        const normalMovement = Math.sin(phase + index * 0.42) * 2.5;
+        // Desviación anómala temporal en Wed 4, 12:00 (reposo laboral que salta anómalamente a ~108 BPM superando el límite de 92 BPM)
+        const simulatedBreach = index === 18 && Math.sin(phase) > 0.6 ? 28 : 0;
+        return { ...row, index, plottedValue: row.value + normalMovement + simulatedBreach };
+      });
+    }
+
+    function drawSegments(animate = true) {
+      const points = plottedRows();
+      const segments = d3.pairs(points);
+
+      function updateLayer(layer, color) {
+        const lines = layer.selectAll("line.data-segment")
+          .data(segments)
+          .join("line")
+          .attr("class", "data-segment")
+          .attr("stroke", color)
+          .attr("stroke-width", 3)
+          .attr("stroke-linecap", "round");
+
+        const positioned = animate ? lines.transition().duration(850) : lines;
+        positioned
+          .attr("x1", ([a]) => xScale(String(a.index)))
+          .attr("x2", ([, b]) => xScale(String(b.index)))
+          .attr("y1", ([a]) => yScale(a.plottedValue))
+          .attr("y2", ([, b]) => yScale(b.plottedValue));
+      }
+
+      updateLayer(blueLayer, "#779bc0");
+      updateLayer(redLayer, "#c9573b");
+    }
+
+    function render() {
+      const bounds = container.getBoundingClientRect();
+      const width = Math.max(360, bounds.width);
+      const height = Math.max(360, bounds.height);
+      const plotRight = width - margin.right;
+      const plotBottom = height - margin.bottom;
+      const innerWidth = plotRight - margin.left;
+
+      svg.attr("viewBox", `0 0 ${width} ${height}`);
+      svg.selectAll("*").remove();
+
+      xScale = d3.scalePoint()
+        .domain(xKeys)
+        .range([margin.left, plotRight]);
+
+      // Rango de escala Y adaptado para cubrir sueño (40 BPM) hasta picos de ejercicio vigoroso (180 BPM)
+      yScale = d3.scaleLinear()
+        .domain([30, 190])
+        .range([plotBottom, margin.top]);
+
+      svg.append("rect")
+        .attr("x", margin.left)
+        .attr("y", margin.top)
+        .attr("width", innerWidth)
+        .attr("height", plotBottom - margin.top)
+        .attr("fill", "#222225");
+
+      const yAxis = d3.axisLeft(yScale)
+        .ticks(8)
+        .tickSize(-innerWidth)
+        .tickFormat(value => `${value} BPM`);
+
+      svg.append("g")
+        .attr("class", "y-axis")
+        .attr("transform", `translate(${margin.left},0)`)
+        .call(yAxis)
+        .call(group => group.select(".domain").remove())
+        .call(group => group.selectAll(".tick line").attr("stroke", "rgba(180,180,180,0.17)"))
+        .call(group => group.selectAll(".tick text").attr("fill", "#c9c9cc").attr("font-size", 13));
+
+      // Muestra en el eje X los hitos clave: medianoche (00:00), gimnasio (06:00), mediodía (12:00) y fútbol (19:00)
+      const tickIndices = series
+        .map((row, index) => index)
+        .filter(index => index % 3 === 0);
+
+      const xAxis = d3.axisBottom(xScale)
+        .tickValues(tickIndices.map(String))
+        .tickFormat(key => series[Number(key)].time)
+        .tickSize(0);
+
+      svg.append("g")
+        .attr("class", "x-axis")
+        .attr("transform", `translate(0,${plotBottom})`)
+        .call(xAxis)
+        .call(group => group.selectAll(".tick text").attr("fill", "#c9c9cc").attr("font-size", 14))
+        .call(group => group.select(".domain").attr("stroke", "#a7a7ab"));
+
+      const area = d3.area()
+        .x((row, index) => xScale(String(index)))
+        .y0(row => yScale(row.lower))
+        .y1(row => yScale(row.upper))
+        .curve(d3.curveMonotoneX);
+
+      // Franja gris: Corredor predictivo del modelo histórico
+      svg.append("path")
+        .datum(series)
+        .attr("d", area)
+        .attr("fill", "rgba(145,145,150,0.22)");
+
+      // El recorte excluye la banda: el trazo rojo solo aparece fuera de ella (anomalía)
+      svg.append("defs")
+        .append("clipPath")
+        .attr("id", "outside-band")
+        .attr("clipPathUnits", "userSpaceOnUse")
+        .append("path")
+        .attr("d", `M0,0H${width}V${height}H0Z ${area(series)}`)
+        .attr("fill-rule", "evenodd")
+        .attr("clip-rule", "evenodd");
+
+      blueLayer = svg.append("g").attr("class", "blue-line");
+      redLayer = svg.append("g")
+        .attr("class", "red-line")
+        .attr("clip-path", "url(#outside-band)");
+      drawSegments(false);
+    }
+
+    render();
+    window.addEventListener("resize", render);
+
+    // Animación suave de actualización periódica emulando el stream de telemetría
+    window.setInterval(() => {
+      phase += 0.55;
+      drawSegments(true);
+    }, 1100);
+  </script>
+</body>
+</html>
