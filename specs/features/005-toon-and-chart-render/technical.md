@@ -12,7 +12,7 @@ sequenceDiagram
 
     ML->>API: Compute predictive corridor bounds (lower, upper, forecast)
     Client->>API: GET /api/v1/biometrics/timeseries/forecast?format=toon
-    API-->>Client: 200 OK (Content-Type: text/plain; charset=utf-8 [TOON])
+    API-->>Client: 200 OK (Content-Type: text/plain; charset=utf-8) - TOON payload
     Client->>Parser: parseTabularToon(rawText)
     Parser-->>Client: Structured dataset { series: Array<DataPoint> }
     Client->>D3: render(container, series)
@@ -44,7 +44,7 @@ Rather than fragmenting line paths in JavaScript through expensive geometric int
 
 3. **Layer Stacking:**
    - **Base Layer (Blue):** `<g class="blue-line">` renders the continuous trajectory in `#779bc0` (stroke width 3px).
-   - **Anomaly Layer (Red):** `<g class="red-line" clip-path="url(#outside-band)">` renders the identical line segments in `#c9573b`. Because it is masked by `outside-band`, the red line is only exposed when values breach above `upper` or below `lower`.
+   - **Anomaly Layer (Red):** `<g class="red-line" clip-path="url(#outside-band)">` renders the identical line segments in `#c9573b`. Because it is masked by `outside-band`, the red line is only exposed for the out-of-band anomaly segments.
 
 ## Platform Implementation
 
@@ -138,4 +138,3 @@ series[24]{time,value,lower,upper,type}:
 ## Prototype Reference
 A fully functional standalone prototype implementing the D3 SVG render pipeline, tabular TOON parser, and animated out-of-bounds clip masking is located at:
 [`specs/features/005-toon-and-chart-render/example/toon_and_chart_render.html`](example/toon_and_chart_render.html)
-
